@@ -33,6 +33,8 @@
 #include <stdio.h>
 #include "rio.h"
 
+// rdb 用到了rio操作
+
 /* TBD: include only necessary headers. */
 #include "server.h"
 
@@ -124,34 +126,62 @@
 #define RDB_SAVE_NONE 0
 #define RDB_SAVE_AOF_PREAMBLE (1<<0)
 
+// 保存类型
 int rdbSaveType(rio *rdb, unsigned char type);
+// 加载类型
 int rdbLoadType(rio *rdb);
+// 保存时间
 int rdbSaveTime(rio *rdb, time_t t);
+// 加载时间
 time_t rdbLoadTime(rio *rdb);
+// 根据长度保存字符串对象
 int rdbSaveLen(rio *rdb, uint64_t len);
+// 保存MillisecondTime时间
 int rdbSaveMillisecondTime(rio *rdb, long long t);
 long long rdbLoadMillisecondTime(rio *rdb, int rdbver);
+// 根据长度加载字符串
 uint64_t rdbLoadLen(rio *rdb, int *isencoded);
+
 int rdbLoadLenByRef(rio *rdb, int *isencoded, uint64_t *lenptr);
+// 根据obj中间编码方式，保存到rdb文件中
 int rdbSaveObjectType(rio *rdb, robj *o);
+// 加载对象类型
 int rdbLoadObjectType(rio *rdb);
+// 加载rdb文件
 int rdbLoad(char *filename, rdbSaveInfo *rsi);
+// bgsave 
 int rdbSaveBackground(char *filename, rdbSaveInfo *rsi);
+// 保存到从socket ，用在主从 数据同步
 int rdbSaveToSlavesSockets(rdbSaveInfo *rsi);
+// 移除临时文件
 void rdbRemoveTempFile(pid_t childpid);
+// save 
 int rdbSave(char *filename, rdbSaveInfo *rsi);
+// 保存robj到rdb中
 ssize_t rdbSaveObject(rio *rdb, robj *o, robj *key);
+// 获取保存后的robj长度
 size_t rdbSavedObjectLen(robj *o);
+// 加载robj对象
 robj *rdbLoadObject(int type, rio *rdb, robj *key);
+// bgsave执行完成后的处理方法 ，用于回调函数
 void backgroundSaveDoneHandler(int exitcode, int bysignal);
+// 保存键值对
 int rdbSaveKeyValuePair(rio *rdb, robj *key, robj *val, long long expiretime);
+// 加载string对象
 robj *rdbLoadStringObject(rio *rdb);
+// 保存string对象
 ssize_t rdbSaveStringObject(rio *rdb, robj *obj);
+// 保存raw string 对象
 ssize_t rdbSaveRawString(rio *rdb, unsigned char *s, size_t len);
+// 通用的加载字符串对象
 void *rdbGenericLoadStringObject(rio *rdb, int flags, size_t *lenptr);
+// 以二进制方式保存double值
 int rdbSaveBinaryDoubleValue(rio *rdb, double val);
+// 加载double值
 int rdbLoadBinaryDoubleValue(rio *rdb, double *val);
+// 保存float值
 int rdbSaveBinaryFloatValue(rio *rdb, float val);
+// 加载float值
 int rdbLoadBinaryFloatValue(rio *rdb, float *val);
 int rdbLoadRio(rio *rdb, rdbSaveInfo *rsi, int loading_aof);
 rdbSaveInfo *rdbPopulateSaveInfo(rdbSaveInfo *rsi);

@@ -819,8 +819,17 @@ typedef struct client {
     char buf[PROTO_REPLY_CHUNK_BYTES];
 } client;
 
+/***
+ * 这个结构体记录配置文件中设置
+ * 进行rdb的条件
+ * save 900 1
+ * save 300 10
+ * save 60 1000
+*/
 struct saveparam {
+    // 秒数
     time_t seconds;
+    // 修改数
     int changes;
 };
 
@@ -962,6 +971,7 @@ struct redisMemOverhead {
  * replication in order to make sure that chained slaves (slaves of slaves)
  * select the correct DB and are able to accept the stream coming from the
  * top-level master. */
+// 保存主从数据同步信息结构
 typedef struct rdbSaveInfo {
     /* Used saving and loading. */
     int repl_stream_db;  /* DB to select in server.master client. */
@@ -1165,14 +1175,19 @@ struct redisServer {
                                       to child process. */
     sds aof_child_diff;             /* AOF diff accumulator child side. */
     /* RDB persistence */
+    // 计数器 记录距离上一成功保存rdb文件后，服务器对数据库状态进行了多少次修改
     long long dirty;                /* Changes to DB from the last save */
     long long dirty_before_bgsave;  /* Used to restore dirty on failed BGSAVE */
     pid_t rdb_child_pid;            /* PID of RDB saving child */
+    // rdb条件参数 决定什么时候进行rdb
     struct saveparam *saveparams;   /* Save points array for RDB */
+    // rdb参数长度
     int saveparamslen;              /* Number of saving points */
+    // rdb文件名
     char *rdb_filename;             /* Name of RDB file */
     int rdb_compression;            /* Use compression in RDB? */
     int rdb_checksum;               /* Use RDB checksum? */
+    // 上一次保存时间
     time_t lastsave;                /* Unix time of last successful save */
     time_t lastbgsave_try;          /* Unix time of last attempted bgsave */
     time_t rdb_save_time_last;      /* Time used by last RDB save run. */

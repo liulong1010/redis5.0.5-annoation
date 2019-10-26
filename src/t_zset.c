@@ -1169,6 +1169,7 @@ unsigned long zsetLength(const robj *zobj) {
     return length;
 }
 
+// 有序集合 编码转换 HT->ZIPLIST 节约空间 
 void zsetConvert(robj *zobj, int encoding) {
     zset *zs;
     zskiplistNode *node, *next;

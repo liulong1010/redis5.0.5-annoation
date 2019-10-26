@@ -40,13 +40,14 @@
 
 /* The current RDB version. When the format changes in a way that is no longer
  * backward compatible this number gets incremented. */
+// 当前RDB版本号
 #define RDB_VERSION 9
 
 /* Defines related to the dump file format. To store 32 bits lengths for short
  * keys requires a lot of space, so we check the most significant 2 bits of
  * the first byte to interpreter the length:
  *
- * 00|XXXXXX => if the two MSB are 00 the len is the 6 bits of this byte
+ * 00|XXXXXX => if the two MSB(最高位) are 00 the len is the 6 bits of this byte
  * 01|XXXXXX XXXXXXXX =>  01, the len is 14 byes, 6 bits + 8 bits of next byte
  * 10|000000 [32 bit integer] => A full 32 bit len in net byte order will follow
  * 10|000001 [64 bit integer] => A full 64 bit len in net byte order will follow
@@ -56,24 +57,29 @@
  *
  * Lengths up to 63 are stored using a single byte, most DB keys, and may
  * values, will fit inside. */
+// RDB存储的数据类型编码
 #define RDB_6BITLEN 0
 #define RDB_14BITLEN 1
 #define RDB_32BITLEN 0x80
 #define RDB_64BITLEN 0x81
+// 需要指定编码
 #define RDB_ENCVAL 3
 #define RDB_LENERR UINT64_MAX
 
 /* When a length of a string object stored on disk has the first two bits
  * set, the remaining six bits specify a special encoding for the object
  * accordingly to the following defines: */
+// 整数编码格式
 #define RDB_ENC_INT8 0        /* 8 bit signed integer */
 #define RDB_ENC_INT16 1       /* 16 bit signed integer */
 #define RDB_ENC_INT32 2       /* 32 bit signed integer */
+// LZF压缩格式
 #define RDB_ENC_LZF 3         /* string compressed with FASTLZ */
 
 /* Map object types to RDB object types. Macros starting with OBJ_ are for
  * memory storage and may change. Instead RDB types must be fixed because
  * we store them on disk. */
+// 保存在rdb中的数据类型
 #define RDB_TYPE_STRING 0
 #define RDB_TYPE_LIST   1
 #define RDB_TYPE_SET    2
@@ -183,6 +189,7 @@ int rdbLoadBinaryDoubleValue(rio *rdb, double *val);
 int rdbSaveBinaryFloatValue(rio *rdb, float val);
 // 加载float值
 int rdbLoadBinaryFloatValue(rio *rdb, float *val);
+// 加载rdb
 int rdbLoadRio(rio *rdb, rdbSaveInfo *rsi, int loading_aof);
 rdbSaveInfo *rdbPopulateSaveInfo(rdbSaveInfo *rsi);
 

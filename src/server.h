@@ -1677,7 +1677,9 @@ void updateSlavesWaitingBgsave(int bgsaveerr, int type);
 void replicationCron(void);
 void replicationHandleMasterDisconnection(void);
 void replicationCacheMaster(client *c);
+// 调整复制积压缓冲区的大小
 void resizeReplicationBacklog(long long newsize);
+// 设置主服务器的地址和端口
 void replicationSetMaster(char *ip, int port);
 void replicationUnsetMaster(void);
 void refreshGoodSlavesCount(void);
